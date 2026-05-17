@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sara Ait Tajelt — Portfolio BUT TC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --fantasy:  #F7F3ED;
+      --oat:      #E8DBCC;
+      --oat-dark: #D9CAAD;
+      --mug:      #5F0C2F;
+      --mug-light:#7a1040;
+      --choco:    #3C0E18;
+      --white:    #FFFFFF;
+      --gray:     #8a7060;
+      --border:   #DDD0C0;
+      --text:     #2a1008;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { font-family:'DM Sans',sans-serif; background:var(--fantasy); color:var(--text); line-height:1.6; overflow-x:hidden; }
+
+    .reveal       { opacity:0; transform:translateY(32px);  transition:opacity .65s ease,transform .65s ease; }
+    .reveal-left  { opacity:0; transform:translateX(-32px); transition:opacity .65s ease,transform .65s ease; }
+    .reveal-right { opacity:0; transform:translateX(32px);  transition:opacity .65s ease,transform .65s ease; }
+    .reveal.visible,.reveal-left.visible,.reveal-right.visible { opacity:1; transform:none; }
+
+    /* NAV */
+    nav {
+      position:fixed; top:0; left:0; right:0; z-index:100;
+      padding:0 60px; height:66px;
+      display:flex; align-items:center; justify-content:space-between;
+      transition:background .3s,box-shadow .3s;
+    }
+    nav.scrolled { background:rgba(60,14,24,.95); box-shadow:0 2px 20px rgba(0,0,0,.15); }
+    .nav-logo { font-family:'Playfair Display',serif; font-weight:700; font-size:1.1rem; color:var(--fantasy); text-decoration:none; letter-spacing:.02em; }
+    .nav-logo span { color:var(--oat); opacity:.7; }
+    .nav-links { display:flex; gap:36px; list-style:none; }
+    .nav-links a { font-size:.76rem; font-weight:500; letter-spacing:.11em; text-transform:uppercase; color:rgba(247,243,237,.6); text-decoration:none; transition:color .2s; }
+    .nav-links a:hover { color:var(--fantasy); }
+
+    /* HERO — seule section foncée */
+    .hero {
+      background:var(--choco);
+      min-height:100vh; display:flex; align-items:center;
+      padding:100px 60px 80px; position:relative; overflow:hidden;
+    }
+    .hero::before {
+      content:''; position:absolute; top:-160px; right:-160px;
+      width:480px; height:480px; border-radius:50%;
+      background:radial-gradient(circle,rgba(95,12,47,.3) 0%,transparent 70%);
+      pointer-events:none;
+    }
+    .hero-inner {
+      max-width:1200px; margin:0 auto; width:100%;
+      display:grid; grid-template-columns:1fr 280px;
+      gap:80px; align-items:center; position:relative; z-index:1;
+    }
+    .hero-badge {
+      display:inline-flex; align-items:center; gap:8px;
+      border:1px solid rgba(232,219,204,.2); border-radius:100px;
+      padding:6px 15px; font-size:.73rem; font-weight:500;
+      color:rgba(232,219,204,.6); margin-bottom:24px;
+    }
+    .hero-name {
+      font-family:'Playfair Display',serif; font-weight:900;
+      font-size:clamp(3rem,7vw,5rem); line-height:1.05;
+      color:var(--fantasy); margin-bottom:8px;
+    }
+    .hero-name .accent { color:var(--oat); }
+    .hero-role { font-size:.95rem; font-weight:300; color:rgba(247,243,237,.45); margin-bottom:28px; }
+    .hero-divider { width:40px; height:2px; background:var(--oat); opacity:.35; margin-bottom:24px; border-radius:2px; }
+    .hero-text { font-size:.93rem; color:rgba(247,243,237,.6); line-height:1.85; max-width:520px; margin-bottom:40px; }
+    .hero-btns { display:flex; gap:12px; flex-wrap:wrap; }
+    .btn-primary { display:inline-flex; align-items:center; gap:8px; background:var(--oat); color:var(--choco); padding:12px 28px; border-radius:6px; font-size:.86rem; font-weight:700; text-decoration:none; transition:background .2s,transform .2s; }
+    .btn-primary:hover { background:var(--fantasy); transform:translateY(-2px); }
+    .btn-secondary { display:inline-flex; align-items:center; gap:8px; background:transparent; color:var(--fantasy); padding:12px 28px; border-radius:6px; font-size:.86rem; font-weight:500; text-decoration:none; border:1px solid rgba(247,243,237,.2); transition:all .2s; }
+    .btn-secondary:hover { border-color:var(--oat); color:var(--oat); transform:translateY(-2px); }
+
+    .hero-right { display:flex; justify-content:center; }
+    .hero-photo { width:240px; height:240px; border-radius:50%; object-fit:cover; object-position:center top; border:2px solid rgba(232,219,204,.2); display:block; }
+
+    /* STATS — fond mug (accent foncé mais pas noir) */
+    .stats-bar { background:var(--mug); padding:28px 60px; }
+    .stats-bar-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); gap:20px; text-align:center; }
+    .stat-num { font-family:'Playfair Display',serif; font-weight:700; font-size:1.8rem; color:var(--fantasy); display:block; }
+    .stat-lbl { font-size:.68rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:rgba(247,243,237,.5); }
+
+    /* LABELS */
+    .section-label { font-size:.7rem; font-weight:700; letter-spacing:.15em; text-transform:uppercase; color:var(--mug); margin-bottom:8px; }
+    .section-title { font-family:'Playfair Display',serif; font-weight:700; font-size:clamp(1.6rem,3.5vw,2.6rem); color:var(--choco); margin-bottom:12px; line-height:1.2; }
+    .section-sub   { font-size:.93rem; color:var(--gray); max-width:460px; margin-bottom:48px; }
+
+    /* TIMELINE — fond oat (clair) */
+    .timeline-section { background:var(--oat); padding:90px 60px; }
+    .timeline-inner { max-width:1200px; margin:0 auto; }
+    .timeline { position:relative; margin-top:40px; }
+    .timeline::before { content:''; position:absolute; left:50%; top:0; bottom:0; width:1px; background:var(--oat-dark); transform:translateX(-50%); }
+    .timeline-item { display:grid; grid-template-columns:1fr 1fr; gap:52px; margin-bottom:40px; align-items:center; position:relative; }
+    .timeline-item::before { content:''; position:absolute; left:50%; top:50%; width:10px; height:10px; border-radius:50%; background:var(--mug); opacity:.6; transform:translate(-50%,-50%); border:2px solid var(--oat); }
+    .timeline-item.right .timeline-content { grid-column:2; grid-row:1; }
+    .timeline-item.right .timeline-empty  { grid-column:1; grid-row:1; }
+    .timeline-content { background:var(--white); border:1px solid var(--border); border-radius:12px; padding:20px; }
+    .timeline-date { font-size:.7rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--mug); opacity:.6; margin-bottom:5px; }
+    .timeline-content h3 { font-family:'Playfair Display',serif; font-weight:700; font-size:.95rem; color:var(--choco); margin-bottom:4px; }
+    .timeline-content p  { font-size:.81rem; color:var(--gray); line-height:1.6; }
+
+    /* COMPETENCES — fond fantasy */
+    .competences-section { padding:90px 60px; background:var(--fantasy); }
+    .competences-inner { max-width:1200px; margin:0 auto; }
+    .filters { display:flex; gap:9px; flex-wrap:wrap; margin-bottom:40px; }
+    .filter-btn { padding:8px 19px; border-radius:6px; font-size:.78rem; font-weight:600; cursor:pointer; border:1px solid var(--border); background:var(--white); color:var(--text); transition:all .2s; font-family:'DM Sans',sans-serif; }
+    .filter-btn.active,.filter-btn:hover { background:var(--mug); color:var(--fantasy); border-color:var(--mug); }
+    .traces-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+    .trace-card { background:var(--white); border:1px solid var(--border); border-radius:12px; overflow:hidden; cursor:pointer; transition:transform .25s,box-shadow .25s; }
+    .trace-card:hover { transform:translateY(-5px); box-shadow:0 16px 40px rgba(60,14,24,.09); }
+    .trace-img-placeholder { width:100%; height:150px; background:linear-gradient(135deg,var(--mug) 0%,var(--mug-light) 100%); display:flex; align-items:center; justify-content:center; font-size:2.6rem; }
+    .trace-body { padding:18px; }
+    .trace-tags { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:8px; }
+    .trace-tag { font-size:.66rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--mug); background:rgba(95,12,47,.07); padding:3px 9px; border-radius:4px; border:1px solid rgba(95,12,47,.15); }
+    .trace-title { font-family:'Playfair Display',serif; font-weight:700; font-size:.95rem; color:var(--choco); margin-bottom:4px; line-height:1.3; }
+    .trace-meta { font-size:.75rem; color:var(--gray); font-style:italic; margin-bottom:9px; }
+    .trace-highlight { font-size:.77rem; font-weight:600; color:var(--choco); background:var(--oat); padding:5px 9px; border-radius:5px; margin-bottom:7px; display:inline-block; }
+    .trace-link { font-size:.79rem; font-weight:600; color:var(--mug); display:inline-flex; align-items:center; gap:4px; margin-top:3px; }
+
+    /* SKILLS — fond oat */
+    .skills-section { background:var(--oat); padding:90px 60px; }
+    .skills-inner { max-width:1200px; margin:0 auto; }
+    .skills-grid { display:grid; grid-template-columns:1fr 1fr; gap:72px; margin-top:48px; }
+    .skill-group-title { font-family:'Playfair Display',serif; font-weight:700; font-size:1.02rem; color:var(--choco); margin-bottom:24px; padding-bottom:9px; border-bottom:1px solid var(--oat-dark); display:inline-block; }
+    .skill-item { margin-bottom:18px; }
+    .skill-header { display:flex; justify-content:space-between; margin-bottom:6px; }
+    .skill-name { font-size:.84rem; font-weight:600; color:var(--choco); }
+    .skill-pct  { font-size:.77rem; font-weight:600; color:var(--mug); }
+    .skill-bar  { height:4px; background:var(--oat-dark); border-radius:100px; overflow:hidden; }
+    .skill-fill { height:100%; background:linear-gradient(90deg,var(--mug),var(--mug-light)); border-radius:100px; width:0; transition:width 1.2s ease; }
+
+    /* BILAN — fond fantasy */
+    .bilan-section { background:var(--fantasy); padding:90px 60px; }
+    .bilan-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:center; }
+    .bilan-text { font-size:.92rem; color:var(--gray); line-height:1.85; margin-bottom:16px; }
+    .bilan-right { display:flex; flex-direction:column; gap:12px; }
+    .bilan-card { background:var(--white); border:1px solid var(--border); border-left:3px solid var(--mug); border-radius:0 10px 10px 0; padding:15px 18px; }
+    .bilan-card h4 { font-size:.7rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--mug); margin-bottom:4px; }
+    .bilan-card p  { font-size:.85rem; color:var(--gray); line-height:1.6; }
+
+    /* CONTACT — fond oat */
+    .contact-section { background:var(--oat); padding:90px 60px; }
+    .contact-inner { max-width:1200px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:start; }
+    .contact-item { display:flex; align-items:center; gap:13px; margin-bottom:18px; }
+    .contact-icon { width:40px; height:40px; border-radius:9px; background:var(--white); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:.9rem; flex-shrink:0; }
+    .contact-label { font-size:.66rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gray); }
+    .contact-value { font-size:.87rem; font-weight:500; color:var(--choco); }
+    .form-label { font-size:.66rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--gray); display:block; margin-bottom:5px; }
+    .form-input,.form-textarea { width:100%; padding:11px 14px; border:1px solid var(--border); border-radius:7px; font-family:'DM Sans',sans-serif; font-size:.87rem; outline:none; background:var(--white); color:var(--text); transition:border-color .2s; }
+    .form-input:focus,.form-textarea:focus { border-color:var(--mug); }
+    .form-textarea { resize:vertical; }
+    .form-btn { width:100%; background:var(--mug); color:var(--fantasy); padding:13px; border:none; border-radius:7px; font-family:'DM Sans',sans-serif; font-size:.87rem; font-weight:700; cursor:pointer; transition:background .2s; }
+    .form-btn:hover { background:var(--mug-light); }
+
+    /* FOOTER */
+    footer { background:var(--choco); text-align:center; padding:24px; font-size:.75rem; color:rgba(247,243,237,.22); border-top:1px solid rgba(247,243,237,.05); }
+    footer span { color:rgba(247,243,237,.45); }
+
+    /* MODAL */
+    .modal-overlay { position:fixed; inset:0; background:rgba(36,10,14,.82); z-index:200; display:flex; align-items:flex-start; justify-content:center; padding:40px 20px; overflow-y:auto; opacity:0; pointer-events:none; transition:opacity .3s; }
+    .modal-overlay.open { opacity:1; pointer-events:all; }
+    .modal { background:var(--fantasy); border-radius:14px; width:100%; max-width:760px; padding:42px; position:relative; transform:translateY(20px); transition:transform .3s; border-top:3px solid var(--mug); }
+    .modal-overlay.open .modal { transform:translateY(0); }
+    .modal-close { position:absolute; top:18px; right:18px; width:32px; height:32px; border-radius:7px; background:var(--oat); border:none; cursor:pointer; font-size:.85rem; display:flex; align-items:center; justify-content:center; color:var(--choco); }
+    .modal-tags { display:flex; gap:7px; flex-wrap:wrap; margin-bottom:14px; }
+    .modal-tag { font-size:.66rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; padding:4px 12px; border-radius:4px; }
+    .modal-tag.dark    { background:var(--choco); color:var(--fantasy); }
+    .modal-tag.mug     { background:var(--mug);   color:var(--fantasy); }
+    .modal-tag.outline { background:var(--white);  color:var(--choco); border:1px solid var(--border); }
+    .modal h2 { font-family:'Playfair Display',serif; font-weight:700; font-size:1.4rem; color:var(--choco); margin-bottom:4px; line-height:1.3; }
+    .modal-source { font-size:.78rem; color:var(--gray); font-style:italic; margin-bottom:26px; }
+    .modal-section { margin-bottom:22px; }
+    .modal-section-title { font-size:.68rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--mug); margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid var(--border); }
+    .modal-section p { font-size:.89rem; line-height:1.78; color:var(--text); }
+    .modal-tools { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:11px; }
+    .tool-tag { background:var(--oat); color:var(--choco); font-size:.73rem; font-weight:500; padding:3px 10px; border-radius:4px; border:1px solid var(--border); }
+    .modal-result-box { background:var(--oat); border-left:3px solid var(--mug); border-radius:0 7px 7px 0; padding:12px 16px; font-size:.85rem; font-weight:600; color:var(--choco); margin-top:7px; }
+    .modal-quote { border-left:2px solid var(--oat-dark); padding:10px 16px; font-style:italic; font-size:.87rem; color:var(--gray); margin-top:12px; }
+
+    @media(max-width:900px){
+      nav { padding:0 24px; }
+      .hero { padding:100px 24px 60px; }
+      .hero-inner { grid-template-columns:1fr; }
+      .hero-right { display:none; }
+      .stats-bar { padding:26px 24px; }
+      .stats-bar-inner { grid-template-columns:repeat(2,1fr); }
+      .timeline-section,.competences-section,.skills-section,.bilan-section,.contact-section { padding:60px 24px; }
+      .timeline::before { left:18px; }
+      .timeline-item { grid-template-columns:1fr; padding-left:40px; }
+      .timeline-item::before { left:18px; top:20px; }
+      .timeline-item.right .timeline-content { grid-column:1; }
+      .timeline-item.right .timeline-empty { display:none; }
+      .traces-grid { grid-template-columns:1fr; }
+      .skills-grid { grid-template-columns:1fr; gap:32px; }
+      .bilan-inner,.contact-inner { grid-template-columns:1fr; gap:32px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav id="navbar">
+  <a href="#" class="nav-logo">Sara <span>AT</span></a>
+  <ul class="nav-links">
+    <li><a href="#accueil">Accueil</a></li>
+    <li><a href="#parcours">Parcours</a></li>
+    <li><a href="#competences">Compétences</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO (seule section foncée) -->
+<section class="hero" id="accueil">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge">🎓 BUT TC · BDMRC · IUT de Sceaux</div>
+      <h1 class="hero-name">Sara<br><span class="accent">Ait Tajelt</span></h1>
+      <p class="hero-role">Commerciale B2B · Business Development · International</p>
+      <div class="hero-divider"></div>
+      <p class="hero-text">Au cours de mon BUT Techniques de Commercialisation, j'ai développé une approche du commerce avant tout tournée vers le terrain. Entre la prospection intensive chez SMC-CSE, une mission marketing en Malaisie et la création d'une startup de A à Z, j'ai appris à évoluer dans des contextes variés, concrets et exigeants.<br><br>À partir de septembre 2026, j'intégrerai le Programme Grande École de GEM Grenoble, en spécialité Business Development & International Management.</p>
+      <div class="hero-btns">
+        <a href="#" class="btn-primary">⬇️ Télécharger mon CV</a>
+        <a href="#competences" class="btn-secondary">Voir mon portfolio →</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <img src="photo.jpg" alt="Sara Ait Tajelt" class="hero-photo"/>
+    </div>
+  </div>
+</section>
+
+<!-- STATS (mug — seul accent foncé après le hero) -->
+<div class="stats-bar">
+  <div class="stats-bar-inner">
+    <div class="reveal"><span class="stat-num" data-target="3000">0</span><span class="stat-lbl">Prospects contactés</span></div>
+    <div class="reveal"><span class="stat-num" data-target="80">0</span><span class="stat-lbl">Clients B2B suivis</span></div>
+    <div class="reveal"><span class="stat-num">150 000 €</span><span class="stat-lbl">Levée de fonds gala</span></div>
+    <div class="reveal"><span class="stat-num" data-target="4">0</span><span class="stat-lbl">Langues maîtrisées</span></div>
+  </div>
+</div>
+
+<!-- TIMELINE (oat — clair) -->
+<section class="timeline-section" id="parcours">
+  <div class="timeline-inner">
+    <div class="reveal">
+      <div class="section-label">Chronologie</div>
+      <h2 class="section-title">Mon parcours</h2>
+      <p class="section-sub">De la formation aux expériences terrain, une progression constante.</p>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item reveal"><div class="timeline-content"><div class="timeline-date">Sept. 2020 – Juin 2023</div><h3>Baccalauréat STMG</h3><p>Spécialité Gestion & Finance · Lycée Saint-Exupéry</p></div><div></div></div>
+      <div class="timeline-item right reveal"><div></div><div class="timeline-content"><div class="timeline-date">Sept. 2023 – aujourd'hui</div><h3>BUT Techniques de Commercialisation</h3><p>Parcours BDMRC · IUT de Sceaux · Paris-Saclay</p></div></div>
+      <div class="timeline-item reveal"><div class="timeline-content"><div class="timeline-date">Fév. – Mars 2024</div><h3>Vendeuse — Foot Locker</h3><p>Animation commerciale, fidélisation client · Paris</p></div><div></div></div>
+      <div class="timeline-item right reveal"><div></div><div class="timeline-content"><div class="timeline-date">Avr. – Juin 2025</div><h3>Assistante Marketing — Malaisie</h3><p>Pro Events & Marketing · E-mailing B2B, étude de marché internationale</p></div></div>
+      <div class="timeline-item reveal"><div class="timeline-content"><div class="timeline-date">Fév. 2026 – en cours</div><h3>Stage Commercial B2B — SMC-CSE</h3><p>Prospection à froid, qualification leads, CRM · Paris</p></div><div></div></div>
+      <div class="timeline-item right reveal"><div></div><div class="timeline-content"><div class="timeline-date">Sept. 2026</div><h3>Master GEM Grenoble</h3><p>Programme Grande École · Business Development & International Management</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPETENCES (fantasy — clair) -->
+<section class="competences-section" id="competences">
+  <div class="competences-inner">
+    <div class="reveal">
+      <div class="section-label">Portfolio BUT TC BDMRC</div>
+      <h2 class="section-title">Mes Compétences</h2>
+      <p class="section-sub">Sélection de compétences clés issues de mon parcours universitaire et professionnel.</p>
+    </div>
+    <div class="filters">
+      <button class="filter-btn active" onclick="filterTraces('all',this)">Toutes (7)</button>
+      <button class="filter-btn" onclick="filterTraces('bizdev',this)">🚀 Business Dev</button>
+      <button class="filter-btn" onclick="filterTraces('vente',this)">💼 Vente & Relation Client</button>
+      <button class="filter-btn" onclick="filterTraces('international',this)">🌏 International</button>
+      <button class="filter-btn" onclick="filterTraces('entrepreneuriat',this)">💡 Entrepreneuriat</button>
+    </div>
+    <div class="traces-grid" id="tracesGrid">
+      <div class="trace-card reveal" data-cat="bizdev" onclick="openModal('modal-smcse')"><div class="trace-img-placeholder">📞</div><div class="trace-body"><div class="trace-tags"><span class="trace-tag">🚀 Business Dev</span></div><div class="trace-title">Mission de prospection à froid — SMC-CSE</div><div class="trace-meta">Stage · SMC-CSE · Paris · Fév. 2026 – en cours</div><div class="trace-highlight">📊 3 000 appels · 200 dates collectées</div><span class="trace-link">Voir le détail →</span></div></div>
+      <div class="trace-card reveal" data-cat="bizdev entrepreneuriat" onclick="openModal('modal-sae')"><div class="trace-img-placeholder">🚀</div><div class="trace-body"><div class="trace-tags"><span class="trace-tag">🚀 Business Dev</span><span class="trace-tag">💡 Entrepreneuriat</span></div><div class="trace-title">SAE Création d'entreprise — Apprenti'Pro</div><div class="trace-meta">SAE · BUT TC 2ème année · IUT de Sceaux · 2024</div><div class="trace-highlight">📈 CA projeté 7,7M€ an 3 · Montpellier BP</div><span class="trace-link">Voir le détail →</span></div></div>
+      <div class="trace-card reveal" data-cat="bizdev entrepreneuriat" onclick="openModal('modal-celeste')"><div class="trace-img-placeholder">🌐</div><div class="trace-body"><div class="trace-tags"><span class="trace-tag">🚀 Business Dev</span><span class="trace-tag">💡 Entrepreneuriat</span></div><div class="trace-title">SAE Mission Céleste — Cabinet HLBS Vision</div><div class="trace-meta">SAE BDMRC · BUT TC 3ème année · 2025-2026</div><div class="trace-highlight">📊 Stratégie cyber · PDM 3% → 15%</div><span class="trace-link">Voir le détail →</span></div></div>
+      <div class="trace-card reveal" data-cat="international" onclick="openModal('modal-malaisie')"><div class="trace-img-placeholder">🌏</div><div class="trace-body"><div class="trace-tags"><span class="trace-tag">🌏 International</span></div><div class="trace-title">Assistante Marketing — Pro Events & Marketing</div><div class="trace-meta">Stage · Malaisie · Avr. – Juin 2025</div><div class="trace-highlight">🌐 Asie du Sud-Est & Asie Centrale</div><span class="trace-link">Voir le détail →</span></div></div>
+      <div class="trace-card reveal" data-cat="vente" onclick="openModal('modal-footlocker')"><div class="trace-img-placeholder">👟</div><div class="trace-body"><div class="trace-tags"><span class="trace-tag">💼 Vente & Relation Client</span></div><div class="trace-title">Vendeuse Polyvalente — Foot Locker</div><div class="trace-meta">Paris · Fév. – Mars 2024</div><div class="trace-highlight">🛍️ Animation commerciale · Lettre de reco</div><span class="trace-link">Voir le détail →</span></div></div>
+      <div class="trace-card reveal" data-cat="entrepreneuriat" onclick="openModal('modal-benevolat')"><div class="trace-img-placeholder">🎗️</div><div class="trace-body"><div class="trace-tags"><span class="trace-tag">💡 Entrepreneuriat</span></div><div class="trace-title">Bénévole — Organisation d'un Gala Caritatif</div><div class="trace-meta">Paris · Jan. 2025 – en cours</div><div class="trace-highlight">💰 150 000 € levés en une soirée</div><span class="trace-link">Voir le détail →</span></div></div>
+      <div class="trace-card reveal" data-cat="international" onclick="openModal('modal-voyages')"><div class="trace-img-placeholder">✈️</div><div class="trace-body"><div class="trace-tags"><span class="trace-tag">🌏 International</span></div><div class="trace-title">Voyages en Asie — Singapour, Bali, Thaïlande</div><div class="trace-meta">Vie personnelle · 2025</div><div class="trace-highlight">🗺️ 4 pays · Immersion interculturelle</div><span class="trace-link">Voir le détail →</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS (oat — clair) -->
+<section class="skills-section">
+  <div class="skills-inner">
+    <div class="reveal">
+      <div class="section-label">Compétences</div>
+      <h2 class="section-title">Langues & Outils</h2>
+    </div>
+    <div class="skills-grid">
+      <div class="reveal-left">
+        <div class="skill-group-title">Langues</div>
+        <div class="skill-item"><div class="skill-header"><span class="skill-name">Français</span><span class="skill-pct">100%</span></div><div class="skill-bar"><div class="skill-fill" data-width="100"></div></div></div>
+        <div class="skill-item"><div class="skill-header"><span class="skill-name">Italien (C2)</span><span class="skill-pct">100%</span></div><div class="skill-bar"><div class="skill-fill" data-width="100"></div></div></div>
+        <div class="skill-item"><div class="skill-header"><span class="skill-name">Arabe (C2)</span><span class="skill-pct">100%</span></div><div class="skill-bar"><div class="skill-fill" data-width="100"></div></div></div>
+        <div class="skill-item"><div class="skill-header"><span class="skill-name">Anglais (C1)</span><span class="skill-pct">85%</span></div><div class="skill-bar"><div class="skill-fill" data-width="85"></div></div></div>
+        <div class="skill-item"><div class="skill-header"><span class="skill-name">Espagnol (B2)</span><span class="skill-pct">70%</span></div><div class="skill-bar"><div class="skill-fill" data-width="70"></div></div></div>
+      </div>
+      <div class="reveal-right">
+        <div class="skill-group-title">Outils & Technologies</div>
+        <div class="skill-item"><div class="skill-header"><span class="skill-name">HubSpot / CiviCRM</span><span class="skill-pct">85%</span></div><div class="skill-bar"><div class="skill-fill" data-width="85"></div></div></div>
+        <div class="skill-item"><div class="skill-header"><span class="skill-name">Pack Office (Excel)</span><span class="skill-pct">80%</span></div><div class="skill-bar"><div class="skill-fill" data-width="80"></div></div></div>
+        <div class="skill-item"><div class="skill-header"><span class="skill-name">Intelligence Artificielle</span><span class="skill-pct">80%</span></div><div class="skill-bar"><div class="skill-fill" data-width="80"></div></div></div>
+        <div class="skill-item"><div class="skill-header"><span class="skill-name">Canva</span><span class="skill-pct">90%</span></div><div class="skill-bar"><div class="skill-fill" data-width="90"></div></div></div>
+        <div class="skill-item"><div class="skill-header"><span class="skill-name">Trello / Gestion projet</span><span class="skill-pct">75%</span></div><div class="skill-bar"><div class="skill-fill" data-width="75"></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BILAN (fantasy — clair) -->
+<section class="bilan-section">
+  <div class="bilan-inner">
+    <div class="reveal-left">
+      <div class="section-label">Synthèse</div>
+      <h2 class="section-title">Mon profil en quelques mots</h2>
+      <p class="bilan-text">À l'issue de mon BUT TC, je me définis comme un profil commercial opérationnel, orienté résultats et naturellement ouvert à l'international. J'ai appris à prospecter dans des marchés de niche exigeants, à gérer des portefeuilles B2B et à m'adapter à des environnements multiculturels.</p>
+      <p class="bilan-text">Ce qui me distingue : la combinaison d'un sens commercial terrain et d'une capacité à penser stratégiquement — business plan, étude de marché, modélisation financière.</p>
+    </div>
+    <div class="bilan-right reveal-right">
+      <div class="bilan-card"><h4>Profil</h4><p>Commerciale B2B opérationnelle, adaptable, orientée résultats et international</p></div>
+      <div class="bilan-card"><h4>Points forts</h4><p>Prospection & qualification B2B · Analyse stratégique · Adaptabilité interculturelle · Création de valeur entrepreneuriale</p></div>
+      <div class="bilan-card"><h4>Secteurs visés</h4><p>Industriel · Technologie/IT · Commerce international</p></div>
+      <div class="bilan-card"><h4>Projet</h4><p>Master GEM Grenoble · Business Dev & International Management · Sept. 2026</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT (oat — clair) -->
+<section class="contact-section" id="contact">
+  <div class="contact-inner">
+    <div class="reveal-left">
+      <div class="section-label">Me contacter</div>
+      <h2 class="section-title">Travaillons ensemble</h2>
+      <p style="font-size:.9rem;color:var(--gray);margin-bottom:32px;">Une opportunité, un projet, une collaboration ?<br>N'hésite pas à me contacter directement.</p>
+      <div class="contact-item"><div class="contact-icon">📱</div><div><div class="contact-label">Téléphone</div><div class="contact-value">07 66 14 64 39</div></div></div>
+      <div class="contact-item"><div class="contact-icon">✉️</div><div><div class="contact-label">Email</div><div class="contact-value">saraaittajelt1234@gmail.com</div></div></div>
+      <div class="contact-item"><div class="contact-icon">📍</div><div><div class="contact-label">Localisation</div><div class="contact-value">Courbevoie, Île-de-France</div></div></div>
+      <div class="contact-item"><div class="contact-icon">🔗</div><div><div class="contact-label">LinkedIn</div><div class="contact-value">À ajouter</div></div></div>
+    </div>
+    <div class="reveal-right">
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <div><label class="form-label">Nom complet</label><input type="text" class="form-input" placeholder="Votre nom"/></div>
+        <div><label class="form-label">Adresse email</label><input type="email" class="form-input" placeholder="votre@email.com"/></div>
+        <div><label class="form-label">Objet</label><input type="text" class="form-input" placeholder="Opportunité, collaboration..."/></div>
+        <div><label class="form-label">Message</label><textarea class="form-textarea" rows="4" placeholder="Votre message..."></textarea></div>
+        <button class="form-btn">Envoyer le message</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>© 2026 <span>Sara Ait Tajelt</span> · Portfolio BUT TC BDMRC · IUT de Sceaux · Université Paris-Saclay</footer>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-smcse"><div class="modal"><button class="modal-close" onclick="closeModal('modal-smcse')">✕</button><div class="modal-tags"><span class="modal-tag dark">🚀 Business Développement</span><span class="modal-tag outline">📊 Prospection B2B</span></div><h2>Mission de prospection à froid — SMC-CSE</h2><div class="modal-source">📅 Stage · SMC-CSE · Paris · Février 2026 – en cours</div><div class="modal-section"><div class="modal-section-title">Contexte & Situation professionnelle</div><p>Il s'agit d'une mission de prospection téléphonique à froid réalisée dans le cadre de mon stage de fin d'études chez SMC-CSE, entreprise spécialisée dans les solutions à destination des comités sociaux et économiques (CSE). L'objectif était de collecter les dates d'élections CSE — information stratégique déclenchant le cycle d'achat — afin d'alimenter le pipeline commercial.</p></div><div class="modal-section"><div class="modal-section-title">Démarche & Méthodes de travail</div><div class="modal-tools"><span class="tool-tag">Excel</span><span class="tool-tag">CiviCRM</span><span class="tool-tag">Trello</span><span class="tool-tag">Cold Calling</span><span class="tool-tag">E-mailing</span></div><p>J'ai passé environ 3 000 appels en 3 mois, en travaillant à partir de fichiers prospects sur Excel et en utilisant CiviCRM pour mettre à jour les données clients. Les informations collectées étaient centralisées sur un tableau Trello. J'ai également envoyé des mails de prospection et remis à jour les fiches de 70 clients existants.</p></div><div class="modal-section"><div class="modal-section-title">Résultat & Bilan</div><div class="modal-result-box">📊 200 dates d'élections CSE collectées · 3 000 appels · 70 clients remis à jour</div><p style="margin-top:10px;">Cette expérience m'a permis de développer une vraie rigueur dans la gestion d'un volume important de contacts, ainsi qu'une résilience face aux refus inhérents au cold calling.</p></div><div class="modal-quote">"Cette mission m'a appris que la prospection, c'est avant tout une discipline — de méthode, de régularité et de résilience."</div></div></div>
+
+<div class="modal-overlay" id="modal-sae"><div class="modal"><button class="modal-close" onclick="closeModal('modal-sae')">✕</button><div class="modal-tags"><span class="modal-tag dark">🚀 Business Dev</span><span class="modal-tag mug">💡 Entrepreneuriat</span></div><h2>SAE Création d'entreprise — Apprenti'Pro</h2><div class="modal-source">📅 SAE · BUT TC 2ème année · IUT de Sceaux · Novembre 2024</div><div class="modal-section"><div class="modal-section-title">Contexte & Situation professionnelle</div><p>Il s'agit d'un projet de création d'entreprise réalisé en BUT 2, en équipe de 5 étudiantes. Nous avons conçu <strong>Apprenti'Pro</strong>, une plateforme dédiée à la mise en relation entre étudiants en recherche d'alternance et entreprises recruteuses, avec un système de matching pour optimiser la pertinence des mises en relation.</p></div><div class="modal-section"><div class="modal-section-title">Démarche & Méthodes de travail</div><div class="modal-tools"><span class="tool-tag">Business Model Canvas</span><span class="tool-tag">Étude de marché</span><span class="tool-tag">Montpellier Business Plan</span><span class="tool-tag">Plan de financement</span><span class="tool-tag">Pitch investisseurs</span></div><p>J'ai pris en charge la relation étudiants, les frais généraux et le plan de financement — capital social 25 000€, subvention BPI 10 000€, modèle financier construit sur le Montpellier Business Plan. Le projet a été pitché en amphi pour lever 550 000€.</p></div><div class="modal-section"><div class="modal-section-title">Résultat & Bilan</div><div class="modal-result-box">📈 CA projeté : 759 395 € an 1 → 7 773 766 € an 3 · Excédent cumulé : 4,6 M€</div></div><div class="modal-quote">"Ce projet m'a appris à raisonner en entrepreneur — à voir derrière chaque chiffre une décision stratégique."</div></div></div>
+
+<div class="modal-overlay" id="modal-celeste"><div class="modal"><button class="modal-close" onclick="closeModal('modal-celeste')">✕</button><div class="modal-tags"><span class="modal-tag dark">🚀 Business Dev</span><span class="modal-tag mug">📊 Stratégie commerciale</span></div><h2>SAE Mission Céleste — Cabinet HLBS Vision</h2><div class="modal-source">📅 SAE BDMRC · BUT TC 3ème année · IUT de Sceaux · 2025-2026</div><div class="modal-section"><div class="modal-section-title">Contexte & Situation professionnelle</div><p>SAE de 3ème année en équipe de 4, dans laquelle nous avons incarné un cabinet de conseil commercial fictif — <strong>HLBS Vision</strong> — mandaté par Céleste, opérateur télécom B2B français spécialisé dans la fibre, le cloud souverain et la cybersécurité. Notre mission : analyser le marché et construire une stratégie commerciale complète.</p></div><div class="modal-section"><div class="modal-section-title">Démarche & Méthodes de travail</div><div class="modal-tools"><span class="tool-tag">PESTEL</span><span class="tool-tag">SWOT</span><span class="tool-tag">Benchmark concurrentiel</span><span class="tool-tag">Matrice 3D</span><span class="tool-tag">Projections financières</span><span class="tool-tag">KPI</span></div><p>J'ai pris en charge l'introduction et présentation des marchés (cloud 27Md€, télécoms 47Md€, cybersécurité 6-8Md€), le segment écoles supérieures, et les projections financières 2026-2027. Notre stratégie visait à positionner Céleste comme référent B2B en cybersécurité.</p></div><div class="modal-section"><div class="modal-section-title">Résultat & Bilan</div><div class="modal-result-box">📊 PDM : 3% → 15% · CA +20% · +2 200 nouveaux contrats · 45 campus connectés</div></div><div class="modal-quote">"Analyser un marché réel et construire une stratégie défendable, c'est là que j'ai compris ce que signifie vraiment le business development."</div></div></div>
+
+<div class="modal-overlay" id="modal-malaisie"><div class="modal"><button class="modal-close" onclick="closeModal('modal-malaisie')">✕</button><div class="modal-tags"><span class="modal-tag dark">🌏 International</span><span class="modal-tag outline">🇲🇾 Malaisie</span></div><h2>Assistante Marketing — Pro Events & Marketing</h2><div class="modal-source">📅 Stage · Malaisie · Avril – Juin 2025</div><div class="modal-section"><div class="modal-section-title">Contexte & Situation professionnelle</div><p>Mission d'assistante marketing réalisée en Malaisie, intégralement en anglais dans un environnement multiculturel, au contact de marchés d'Asie du Sud-Est et d'Asie Centrale.</p></div><div class="modal-section"><div class="modal-section-title">Démarche & Méthodes de travail</div><div class="modal-tools"><span class="tool-tag">E-mailing B2B</span><span class="tool-tag">Création de contenu</span><span class="tool-tag">Étude de marché</span><span class="tool-tag">Traduction EN/ZH</span><span class="tool-tag">Coordination B2B</span></div><p>Création de fiches produits en anglais à partir de sources en chinois, déploiement de deux campagnes d'e-mailing B2B, et réalisation d'une étude de marché sur l'Ouzbékistan. Participation aux RDV clients et coordination d'événements B2B.</p></div><div class="modal-section"><div class="modal-section-title">Résultat & Bilan</div><div class="modal-result-box">🌐 2 campagnes e-mailing · Étude de marché Ouzbékistan · Contenus 10+ produits</div></div><div class="modal-quote">"Travailler en Malaisie m'a appris que l'adaptation, c'est la compétence commerciale la plus précieuse qui soit."</div></div></div>
+
+<div class="modal-overlay" id="modal-footlocker"><div class="modal"><button class="modal-close" onclick="closeModal('modal-footlocker')">✕</button><div class="modal-tags"><span class="modal-tag dark">💼 Vente & Relation Client</span><span class="modal-tag mug">⭐ Lettre de reco</span></div><h2>Vendeuse Polyvalente — Foot Locker</h2><div class="modal-source">📅 Paris · Février – Mars 2024</div><div class="modal-section"><div class="modal-section-title">Contexte & Situation professionnelle</div><p>Expérience de vente en retail dans un environnement B2C dynamique chez Foot Locker, enseigne internationale de référence dans la distribution de chaussures et vêtements sportifs.</p></div><div class="modal-section"><div class="modal-section-title">Démarche & Méthodes de travail</div><div class="modal-tools"><span class="tool-tag">Animation commerciale</span><span class="tool-tag">Fidélisation client</span><span class="tool-tag">Gestion des stocks</span><span class="tool-tag">Reporting des ventes</span></div><p>Accueil et conseil client, animation commerciale en rayon, gestion des stocks et reporting des ventes. Confrontée aux fondamentaux de la relation client : écoute active, argumentation, gestion des objections.</p></div><div class="modal-section"><div class="modal-section-title">Résultat & Bilan</div><div class="modal-result-box">🛍️ Maîtrise des techniques de vente terrain · Lettre de recommandation obtenue</div></div><div class="modal-quote">"Le retail m'a appris la vente dans sa forme la plus directe — celle où chaque échange compte."</div></div></div>
+
+<div class="modal-overlay" id="modal-benevolat"><div class="modal"><button class="modal-close" onclick="closeModal('modal-benevolat')">✕</button><div class="modal-tags"><span class="modal-tag dark">💡 Entrepreneuriat</span><span class="modal-tag outline">🎗️ Associatif</span></div><h2>Bénévole — Organisation d'un Gala Caritatif</h2><div class="modal-source">📅 Paris · Janvier 2025 – en cours</div><div class="modal-section"><div class="modal-section-title">Contexte & Situation professionnelle</div><p>Mission bénévole dans le cadre d'une initiative associative à but non lucratif. Organisation d'un gala caritatif pour récolter des dons pour une caisse d'urgence humanitaire.</p></div><div class="modal-section"><div class="modal-section-title">Démarche & Méthodes de travail</div><div class="modal-tools"><span class="tool-tag">Logistique événementielle</span><span class="tool-tag">Coordination intervenants</span><span class="tool-tag">Accueil donateurs</span><span class="tool-tag">Partenariats</span></div><p>Recherche de salle, coordination des artistes et orateurs, accueil des invités, et gestion rigoureuse des dons.</p></div><div class="modal-section"><div class="modal-section-title">Résultat & Bilan</div><div class="modal-result-box">💰 150 000 € levés en une soirée · Coordination logistique complète</div></div><div class="modal-quote">"Organiser cet événement m'a rappelé que les compétences commerciales peuvent aussi servir des causes qui comptent vraiment."</div></div></div>
+
+<div class="modal-overlay" id="modal-voyages"><div class="modal"><button class="modal-close" onclick="closeModal('modal-voyages')">✕</button><div class="modal-tags"><span class="modal-tag dark">🌏 International</span><span class="modal-tag outline">✈️ Vie personnelle</span></div><h2>Voyages en Asie — Singapour, Bali, Thaïlande</h2><div class="modal-source">📅 Vie personnelle · 2025</div><div class="modal-section"><div class="modal-section-title">Contexte</div><p>Dans le prolongement de mon stage en Malaisie, j'ai voyagé à Singapour, Bali et en Thaïlande — une immersion culturelle profonde au-delà du cadre touristique.</p></div><div class="modal-section"><div class="modal-section-title">Ce que j'en retire</div><p>Ces expériences ont renforcé ma capacité d'adaptation dans des environnements radicalement différents et nourri ma curiosité pour les dynamiques des marchés émergents d'Asie.</p></div><div class="modal-section"><div class="modal-section-title">Lien avec mon projet professionnel</div><div class="modal-result-box">🗺️ Singapour · Malaisie · Bali · Thaïlande · Immersion totale en anglais</div></div><div class="modal-quote">"Voyager en Asie, c'est comprendre que le commerce international ne se résume pas à des chiffres — c'est avant tout une question de culture et de confiance."</div></div></div>
+
+<script>
+  window.addEventListener('scroll',()=>{
+    document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>50);
+  });
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('visible');
+        e.target.querySelectorAll('.skill-fill').forEach(b=>{ b.style.width=b.dataset.width+'%'; });
+        e.target.querySelectorAll('.stat-num[data-target]').forEach(el=>counter(el,+el.dataset.target));
+      }
+    });
+  },{threshold:.15});
+  document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el=>obs.observe(el));
+
+  function counter(el,t){
+    let s=0,step=t/(1500/16);
+    const tm=setInterval(()=>{
+      s+=step;
+      if(s>=t){el.textContent=t.toLocaleString('fr-FR');clearInterval(tm);}
+      else el.textContent=Math.floor(s).toLocaleString('fr-FR');
+    },16);
+  }
+  function openModal(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden';}
+  function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';}
+  document.querySelectorAll('.modal-overlay').forEach(o=>{
+    o.addEventListener('click',function(e){if(e.target===this){this.classList.remove('open');document.body.style.overflow='';}});
+  });
+  function filterTraces(cat,btn){
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.trace-card').forEach(c=>{
+      c.style.display=(cat==='all'||c.dataset.cat.includes(cat))?'block':'none';
+    });
+  }
+</script>
+</body>
+</html>
